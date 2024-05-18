@@ -83,7 +83,7 @@ class New_window(tk.Toplevel):
         for i in range(len(data)):
             if i < len(self.entries):  
                 self.entries[i].insert(0, data[i])
-        save_btn = tk.Button(self.edit_dialog, text="Save", command=lambda : self.save_changes(uid))
+        save_btn = tk.Button(self.edit_dialog, text="Сохранить", command=lambda : self.save_changes(uid))
         save_btn.grid(row=column_count, columnspan=2, pady=10)
 
     def save_changes(self, uid):
@@ -98,7 +98,7 @@ class New_window(tk.Toplevel):
     def add_button_action(self):
         if not hasattr(self, 'add_dialog'):
             self.add_dialog = tk.Toplevel(self)
-            self.add_dialog.title("Add")
+            self.add_dialog.title("Добавить")
             column_count = len(self.table["columns"])
             self.entries = []
             for i in range(column_count):

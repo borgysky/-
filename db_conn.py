@@ -9,7 +9,7 @@ def connect(db_name, db_user, db_password, db_host, db_port):
                                       password=db_password, 
                                       host=db_host, 
                                       port=db_port)
-        print("we're so back")
+        #print("we're so back")
         connection.autocommit = True
 
     except Exception as e:
@@ -41,6 +41,44 @@ def add_entry(connection, table_name, data):
             column_names = check_columns(connection, table_name)
             insert_query = f"INSERT INTO {table_name} ({', '.join(column_names)}) VALUES {user_records}"
             cursor.execute(insert_query, data)
-            print(insert_query)
+            return None
     except Exception as e:
         print(f"The error '{e}' occurred")
+        return e
+
+def delete_entry(connection, table_name, row):
+    try:
+        with connection.cursor() as cursor:
+            column_names = check_columns(connection, table_name)
+            print(f"DELETE FROM {table_name} WHERE {column_names[0]} = {row[0]}")
+            cursor.execute(f"DELETE FROM {table_name} WHERE {column_names[0]} = {row[0]}")
+            
+    except Exception as e:
+        print(f"The error '{e}' occurred")
+
+def read_entry(connection, table_name):
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(f"""
+            select * from {table_name}
+            """)
+            result = cursor.fetchall()
+        return result
+    except Exception as e:
+        print(f"The error '{e}' occurred")
+
+def update_entry(connection, table_name, row, uid):
+    try:
+        with connection.cursor() as cursor:
+            column_names = check_columns(connection, table_name)
+            update_values = row[0]
+            user_records = ', '.join([f"{column} = %s" for column in column_names[1:]])
+            update_description = f"""
+                                   UPDATE {table_name} SET {column_names[0]} = %s, {user_records} WHERE {column_names[0]} = %s
+                                   """
+            print(update_description)
+            cursor.execute(update_description, (*update_values, uid))
+        return
+    except Exception as e:
+        print(f"The error '{e}' occurred")
+        return e
